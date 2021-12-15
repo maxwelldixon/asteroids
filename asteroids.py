@@ -1,5 +1,6 @@
 from dotenv import dotenv_values
 import requests
+import calendar
 
 # Asteroids - NeoWs endpoint
 endpoint = 'https://api.nasa.gov/neo/rest/v1'
@@ -50,9 +51,31 @@ def asteroid_closest_approach():
     return closest_approaches
 
 def month_closest_approaches(month: str, year: str):
-    res = requests.get(f'{endpoint}/feed?start_date={year}-{month}-01&api_key={api_key}', timeout=30)
+    try:
+        res = requests.get(f'{endpoint}/feed?start_date={year}-{month}-01&api_key={api_key}', timeout=30)
+
+    except requests.exceptions.HTTPError as err_HTTP:
+        print('HTTP Error:', err_HTTP)
+    except requests.exceptions.ConnectionError as err_connection:
+        print('Connection Error:', err_connection)
+    except requests.exceptions.Timeout as err_timeout:
+        print('Timeout Error:', err_timeout)
+    except requests.exceptions.RequestException as err:
+        print('Whoopsy, something went wrong', err)
+
     return res.status_code
 
 def nearest_misses():
-    res = requests.get(f'{endpoint}/neo/browse?api_key={api_key}', timeout=30)
+    try:
+        res = requests.get(f'{endpoint}/neo/browse?api_key={api_key}', timeout=30)
+ 
+    except requests.exceptions.HTTPError as err_HTTP:
+        print('HTTP Error:', err_HTTP)
+    except requests.exceptions.ConnectionError as err_connection:
+        print('Connection Error:', err_connection)
+    except requests.exceptions.Timeout as err_timeout:
+        print('Timeout Error:', err_timeout)
+    except requests.exceptions.RequestException as err:
+        print('Whoopsy, something went wrong', err)
+
     return res.status_code
