@@ -18,26 +18,14 @@ def asteroid_closest_approach():
         closest_approaches = []
 
         # loop through each page of data
-        for page_num in range(0, total_pages+1):
+        for page_num in range(0, 3):
             res = requests.get(f'{endpoint}/neo/browse?page={page_num}&size=20&api_key={api_key}', timeout=30)
             json = res.json()
             asteroids = json['near_earth_objects']
             for asteroid in asteroids:
                 approach_data = asteroid['close_approach_data']
-                minimum_miss_distance_miles = float('inf')
-                new_close_approach_data = []
-                # find closest approach
-                for val in approach_data:
-                    if float(val['miss_distance']['miles']) < minimum_miss_distance_miles:
-                        minimum_miss_distance_miles = float(val['miss_distance']['miles'])
-                        if new_close_approach_data == []:
-                            new_close_approach_data.append(val)
-                        else:
-                            new_close_approach_data.pop()
-                            new_close_approach_data.append(val)
-
                 # updates close_approach_data list with only the closest approach in miles
-                asteroid['close_approach_data'] = new_close_approach_data
+                asteroid['close_approach_data'] = find_minimum_close_approach_data(approach_data) 
                 closest_approaches.append(asteroid)
 
     except requests.exceptions.HTTPError as err_HTTP:
@@ -70,20 +58,8 @@ def month_closest_approaches(month: str, year: str):
                 month_approaches[day] = []
                 for asteroid in json['near_earth_objects'][day]:
                     approach_data = asteroid['close_approach_data']
-                    minimum_miss_distance_miles = float('inf')
-                    new_close_approach_data = []
-                    # find closest approach
-                    for val in approach_data:
-                        if float(val['miss_distance']['miles']) < minimum_miss_distance_miles:
-                            minimum_miss_distance_miles = float(val['miss_distance']['miles'])
-                            if new_close_approach_data == []:
-                                new_close_approach_data.append(val)
-                            else:
-                                new_close_approach_data.pop()
-                                new_close_approach_data.append(val)
-
                     # updates close_approach_data list with only the closest approach in miles
-                    asteroid['close_approach_data'] = new_close_approach_data 
+                    asteroid['close_approach_data'] = find_minimum_close_approach_data(approach_data) 
                     month_approaches[day].append(asteroid)
 
             # increment start_day to 1 greater than the last day in the previous response
@@ -100,20 +76,8 @@ def month_closest_approaches(month: str, year: str):
                 month_approaches[day] = []
                 for asteroid in json['near_earth_objects'][day]:
                     approach_data = asteroid['close_approach_data']
-                    minimum_miss_distance_miles = float('inf')
-                    new_close_approach_data = []
-                    # find closest approach
-                    for val in approach_data:
-                        if float(val['miss_distance']['miles']) < minimum_miss_distance_miles:
-                            minimum_miss_distance_miles = float(val['miss_distance']['miles'])
-                            if new_close_approach_data == []:
-                                new_close_approach_data.append(val)
-                            else:
-                                new_close_approach_data.pop()
-                                new_close_approach_data.append(val)
-
                     # updates close_approach_data list with only the closest approach in miles
-                    asteroid['close_approach_data'] = new_close_approach_data 
+                    asteroid['close_approach_data'] = find_minimum_close_approach_data(approach_data) 
                     month_approaches[day].append(asteroid)
 
         # append total_element_count for the month
@@ -144,3 +108,17 @@ def nearest_misses():
         print('Whoopsy, something went wrong', err)
 
     return res.status_code
+
+def find_minimum_close_approach_data(data):
+    minimum_miss_distance_miles = float('inf')
+    new_close_approach_data = []
+    # find closest approach
+    for val in data:
+        if float(val['miss_distance']['miles']) < minimum_miss_distance_miles:
+            minimum_miss_distance_miles = float(val['miss_distance']['miles'])
+            if new_close_approach_data == []:
+                new_close_approach_data.append(val)
+            else:
+                new_close_approach_data.pop()
+                new_close_approach_data.append(val)
+    return new_close_approach_data
