@@ -17,7 +17,7 @@ def test_asteroid_closest_approach_returned_data():
     assert asteroid_closest_approach() != []
 
 def test_month_closest_approaches():
-    assert month_closest_approaches('01', '2021') == 200
+    assert month_closest_approaches('1', '2021') != []
 
 def test_nearest_misses():
     assert nearest_misses() == 200
