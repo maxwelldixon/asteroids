@@ -16,6 +16,13 @@ def test_asteroid_closest_approach_api_response():
 def test_asteroid_closest_approach_returned_data():
     assert asteroid_closest_approach() != []
 
+def test_month_closest_approaches_api_response():
+    start_day = '1'
+    year = '2021'
+    month = '1'
+    res = requests.get(f'{endpoint}/feed?start_date={year}-{month}-{start_day}&api_key={api_key}', timeout=30)
+    assert res.status_code == 200
+
 def test_month_closest_approaches():
     assert month_closest_approaches('1', '2021') != []
 
