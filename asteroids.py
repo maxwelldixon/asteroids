@@ -18,7 +18,7 @@ def asteroid_closest_approach():
         closest_approaches = []
 
         # loop through each page of data
-        for page_num in range(0, 3):
+        for page_num in range(0, total_pages+1):
             res = requests.get(f'{endpoint}/neo/browse?page={page_num}&size=20&api_key={api_key}', timeout=30)
             json = res.json()
             asteroids = json['near_earth_objects']
@@ -97,7 +97,7 @@ def month_closest_approaches(month: str, year: str):
 def nearest_misses():
     try:
         res = requests.get(f'{endpoint}/neo/browse?api_key={api_key}', timeout=30)
- 
+
     except requests.exceptions.HTTPError as err_HTTP:
         print('HTTP Error:', err_HTTP)
     except requests.exceptions.ConnectionError as err_connection:
@@ -106,7 +106,7 @@ def nearest_misses():
         print('Timeout Error:', err_timeout)
     except requests.exceptions.RequestException as err:
         print('Whoopsy, something went wrong', err)
-
+    
     return res.status_code
 
 def find_minimum_close_approach_data(data):
